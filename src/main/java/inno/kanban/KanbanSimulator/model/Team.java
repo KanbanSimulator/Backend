@@ -7,17 +7,17 @@ import java.util.Objects;
 @Table(name = "team", schema = "public")
 public class Team {
 
-    private long teamId;
+    private Long teamId;
     private String teamName;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "team_id", nullable = false)
-    public long getTeamId() {
+    public Long getTeamId() {
         return teamId;
     }
 
-    public void setTeamId(long teamId) {
+    public void setTeamId(Long teamId) {
         this.teamId = teamId;
     }
 

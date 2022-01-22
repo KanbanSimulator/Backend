@@ -8,7 +8,7 @@ import java.util.Set;
 @Table(name = "user", schema = "public")
 public class User {
 
-    private long userId;
+    private Long userId;
     private String name;
     private String surname;
     private String email;
@@ -71,9 +71,9 @@ public class User {
     }
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_task",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id"))
+//    @JoinTable(name = "user_task",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "task_id"))
     public Set<Task> getTasks() {
         return tasks;
     }

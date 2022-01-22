@@ -8,23 +8,31 @@ import java.util.Set;
 @Table(name = "task", schema = "public")
 public class Task {
 
-    private long taskId;
+    private Long taskId;
     private String name;
     private String description;
     private int storyPoints;
     private String status;
     private Team team;
+    private User user;
 
+    @ManyToOne
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id", nullable = false)
-    public long getTaskId() {
+    public Long getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(long taskId) {
+    public void setTaskId(Long taskId) {
         this.taskId = taskId;
     }
 

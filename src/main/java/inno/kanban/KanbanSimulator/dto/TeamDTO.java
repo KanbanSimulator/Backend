@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamDTO {
-    private long teamId;
+    private Long teamId;
     private String teamName;
 }

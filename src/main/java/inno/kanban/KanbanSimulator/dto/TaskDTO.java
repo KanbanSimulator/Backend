@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskDTO {
-    private long taskId;
+    private Long taskId;
     private String name;
     private String description;
     private int storyPoints;
     private String status;
-    private User userId;
 }
