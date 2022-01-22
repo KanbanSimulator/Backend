@@ -15,6 +15,5 @@ public class TaskDTO {
     private String description;
     private int storyPoints;
     private String status;
-    private Team team;
     private User userId;
 }
