@@ -1,46 +1,44 @@
 package inno.kanban.KanbanSimulator.model;
 
+import lombok.*;
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "team", schema = "public")
 public class Team {
 
-    private Long teamId;
-    private String teamName;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "team_id", nullable = false)
-    public Long getTeamId() {
-        return teamId;
-    }
+    private Long teamId;
 
-    public void setTeamId(Long teamId) {
-        this.teamId = teamId;
-    }
-
-    @Basic
     @Column(name = "team_name", nullable = false, length = 64)
-    public String getTeamName() {
-        return teamName;
-    }
+    private String teamName;
 
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
-    }
+    @OneToMany(mappedBy = "team")
+    private List<User> userList;
+
+    @OneToMany(mappedBy = "team")
+    private List<Task> taskList;
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Team team = (Team) o;
-        return teamId == team.teamId && Objects.equals(teamName, team.teamName);
+        return teamId != null && Objects.equals(teamId, team.teamId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(teamId, teamName);
+        return getClass().hashCode();
     }
 }

@@ -1,103 +1,55 @@
 package inno.kanban.KanbanSimulator.model;
 
+import lombok.*;
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "task", schema = "public")
 public class Task {
 
-    private Long taskId;
-    private String name;
-    private String description;
-    private int storyPoints;
-    private String status;
-    private Team team;
-    private User user;
-
-    @ManyToOne
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id", nullable = false)
-    public Long getTaskId() {
-        return taskId;
-    }
+    private Long taskId;
 
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
-    }
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Basic
-    @Column(name = "name", nullable = false, length = 64)
-    public String getName() {
-        return name;
-    }
+    @Column(name = "description", nullable = false)
+    private String description;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Column(name = "story_points",nullable = false)
+    private int storyPoints;
 
-    @Basic
-    @Column(name = "description", nullable = false, length = 64)
-    public String getDescription() {
-        return description;
-    }
+    @Column(name = "status")
+    private String status;
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Basic
-    @Column(name = "story_points", nullable = false)
-    public int getStoryPoints() {
-        return storyPoints;
-    }
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
-    public void setStoryPoints(int storyPoints) {
-        this.storyPoints = storyPoints;
-    }
-
-    @Basic
-    @Column(name = "status", nullable = false, length = 64)
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "task_team",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "team_id"))
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Task task = (Task) o;
-        return taskId == task.taskId && storyPoints == task.storyPoints && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(status, task.status) && Objects.equals(team, task.team);
+        return taskId != null && Objects.equals(taskId, task.taskId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(taskId, name, description, storyPoints, status, team);
+        return getClass().hashCode();
     }
 }
