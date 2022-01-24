@@ -17,5 +17,5 @@ public class UserDTO {
     private String surname;
     private String email;
     private Set<Task> tasks;
-    private Board team;
+    private Board board;
 }
