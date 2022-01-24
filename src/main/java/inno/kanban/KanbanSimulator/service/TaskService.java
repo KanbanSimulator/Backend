@@ -17,16 +17,16 @@ public class TaskService {
     private final UserRepository userRepository;
 
 
-    public TaskDTO getTaskByTaskId(Long taskId) {
-        Task task = taskRepository.getById(taskId);
-        return new TaskDTO(task.getTaskId(), task.getName(), task.getDescription(), task.getStoryPoints(), task.getStatus());
-    }
+//    public TaskDTO getTaskByTaskId(Long taskId) {
+//        Task task = taskRepository.getById(taskId);
+//        return new TaskDTO(task.getTaskId(), task.getName(), task.getDescription(), task.getStoryPoints(), task.getStatus(), task.getUser(), task.getTeam());
+//    }
 
-    public List<TaskDTO> getAllTasksByUserId(Long userId) {
-        final List<TaskDTO> taskDTOList = new ArrayList<>();
-        for (Task task : taskRepository.getAllByUser(userRepository.getById(userId))) {
-            taskDTOList.add(new TaskDTO(task.getTaskId(), task.getName(), task.getDescription(), task.getStoryPoints(), task.getStatus()));
-        }
-        return taskDTOList;
-    }
+//    public List<TaskDTO> getAllTasksByUserId(Long userId) {
+//        final List<TaskDTO> taskDTOList = new ArrayList<>();
+//        for (Task task : taskRepository.getAllByUser(userRepository.getById(userId))) {
+//            taskDTOList.add(new TaskDTO(task.getTaskId(), task.getName(), task.getDescription(), task.getStoryPoints(), task.getStatus(), task.getUser(), task.getTeam()));
+//        }
+//        return taskDTOList;
+//    }
 }

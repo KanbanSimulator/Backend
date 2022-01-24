@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,10 +33,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Task> tasks;
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
-
+    @OneToMany(mappedBy = "user")
+    private List<UserTeamRole> teamsAndRoles;
 
     @Override
     public boolean equals(Object o) {

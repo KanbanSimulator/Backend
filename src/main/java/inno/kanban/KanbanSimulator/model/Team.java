@@ -23,11 +23,10 @@ public class Team {
     private String teamName;
 
     @OneToMany(mappedBy = "team")
-    private List<User> userList;
-
-    @OneToMany(mappedBy = "team")
     private List<Task> taskList;
 
+    @OneToMany(mappedBy = "team")
+    private List<UserTeamRole> usersAndRoles;
 
     @Override
     public boolean equals(Object o) {

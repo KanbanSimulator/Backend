@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -28,8 +29,9 @@ public class Task {
     @Column(name = "story_points",nullable = false)
     private int storyPoints;
 
-    @Column(name = "status")
-    private String status;
+    @OneToOne
+    @JoinColumn(name = "status_id")
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -39,6 +41,12 @@ public class Task {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @OneToMany
+    @JoinColumn(name = "label_id")
+    private List<Label> label;
+
+    @ManyToMany(mappedBy = "tasks")
+    private List<Label> labels;
 
     @Override
     public boolean equals(Object o) {
