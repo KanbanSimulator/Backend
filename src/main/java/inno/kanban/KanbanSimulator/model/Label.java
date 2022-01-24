@@ -26,8 +26,8 @@ public class Label {
     private String color;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @ManyToMany
     @JoinTable(name = "task_label",

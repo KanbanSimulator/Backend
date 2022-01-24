@@ -1,6 +1,6 @@
 package inno.kanban.KanbanSimulator.dto;
 
-import inno.kanban.KanbanSimulator.model.Team;
+import inno.kanban.KanbanSimulator.model.Board;
 import inno.kanban.KanbanSimulator.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,5 +16,5 @@ public class TaskDTO {
     private int storyPoints;
     private String status;
     private User user;
-    private Team team;
+    private Board team;
 }

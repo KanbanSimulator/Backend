@@ -1,22 +1,12 @@
 package inno.kanban.KanbanSimulator.controller;
 
-import inno.kanban.KanbanSimulator.dto.TaskDTO;
-import inno.kanban.KanbanSimulator.model.Task;
-import inno.kanban.KanbanSimulator.model.Team;
-import inno.kanban.KanbanSimulator.model.User;
 import inno.kanban.KanbanSimulator.repository.TaskRepository;
 import inno.kanban.KanbanSimulator.repository.TeamRepository;
 import inno.kanban.KanbanSimulator.repository.UserRepository;
 import inno.kanban.KanbanSimulator.service.TaskService;
 import inno.kanban.KanbanSimulator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashSet;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/task")

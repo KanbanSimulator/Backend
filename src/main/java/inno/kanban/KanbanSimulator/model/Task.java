@@ -23,23 +23,26 @@ public class Task {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = true)
     private String description;
 
-    @Column(name = "story_points",nullable = false)
+    @Column(name = "story_points",nullable = true)
     private int storyPoints;
 
-    @OneToOne
-    @JoinColumn(name = "status_id")
-    private Status status;
+    @Column(name = "position",nullable = false)
+    private int position;
+
+    @ManyToOne
+    @JoinColumn(name = "column_id")
+    private ColumnStatus column;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @OneToMany
     @JoinColumn(name = "label_id")

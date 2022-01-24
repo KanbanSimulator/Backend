@@ -13,21 +13,21 @@ import javax.persistence.*;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "user_team", schema = "public")
+@Table(name = "user_board", schema = "public")
 public class UserTeamRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_team_id", nullable = false)
-    private Long user_team_id;
+    @Column(name = "user_board_id", nullable = false)
+    private Long user_board_id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

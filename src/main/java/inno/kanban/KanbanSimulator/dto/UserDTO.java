@@ -1,7 +1,7 @@
 package inno.kanban.KanbanSimulator.dto;
 
 import inno.kanban.KanbanSimulator.model.Task;
-import inno.kanban.KanbanSimulator.model.Team;
+import inno.kanban.KanbanSimulator.model.Board;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +17,5 @@ public class UserDTO {
     private String surname;
     private String email;
     private Set<Task> tasks;
-    private Team team;
+    private Board team;
 }

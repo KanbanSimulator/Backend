@@ -1,23 +1,25 @@
 package inno.kanban.KanbanSimulator.model;
 
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "status", schema = "public")
-public class Status {
+@Table(name = "column", schema = "public")
+public class ColumnStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "status_id", nullable = false)
-    private Long status_id;
+    @Column(name = "column_id", nullable = false)
+    private Long column_id;
 
     @Column(name = "name")
     private String name;
@@ -25,10 +27,11 @@ public class Status {
     @Column(name = "position")
     private int position;
 
-    @OneToOne(mappedBy = "status")
-    private Task task;
+    @OneToMany(mappedBy = "column")
+    private List<Task> task;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JoinColumn(name = "board_id")
+    private Board board;
 }
+

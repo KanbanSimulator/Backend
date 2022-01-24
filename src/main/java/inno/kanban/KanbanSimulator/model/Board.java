@@ -12,28 +12,29 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "team", schema = "public")
-public class Team {
+@Table(name = "board", schema = "public")
+public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long teamId;
+    @Column(name = "board_id", nullable = false)
+    private Long boardId;
 
-    @Column(name = "team_name", nullable = false, length = 64)
-    private String teamName;
+    @Column(name = "board_name", nullable = false, length = 64)
+    private String boardName;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "board")
     private List<Task> taskList;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "board")
     private List<UserTeamRole> usersAndRoles;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Team team = (Team) o;
-        return teamId != null && Objects.equals(teamId, team.teamId);
+        Board team = (Board) o;
+        return boardId != null && Objects.equals(boardId, team.boardId);
     }
 
     @Override
