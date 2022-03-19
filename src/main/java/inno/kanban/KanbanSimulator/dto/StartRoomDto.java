@@ -1,21 +1,15 @@
 package inno.kanban.KanbanSimulator.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class PlayerDto {
+public class StartRoomDto {
 
-    private Long id;
-
-    private String name;
-
-    private Boolean creator;
-
-    private Long teamNumber;
+    List<StartPlayerDto> players;
 }

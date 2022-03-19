@@ -20,7 +20,7 @@ public class Player {
     private Long id;
 
     @Column(nullable = false)
-    @ColumnDefault(value = "name")
+    @ColumnDefault(value = "'name'")
     @Builder.Default
     private String name = "name";
 

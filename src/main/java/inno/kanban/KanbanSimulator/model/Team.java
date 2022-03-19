@@ -23,6 +23,9 @@ public class Team {
 
     private String name;
 
+    @Column(nullable = false)
+    private Long number;
+
     @OneToOne
     private Room game;
 

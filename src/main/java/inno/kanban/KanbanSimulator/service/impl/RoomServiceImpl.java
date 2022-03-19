@@ -3,9 +3,8 @@ package inno.kanban.KanbanSimulator.service.impl;
 import inno.kanban.KanbanSimulator.dao.PlayerRepository;
 import inno.kanban.KanbanSimulator.dao.RoomRepository;
 import inno.kanban.KanbanSimulator.dao.TeamRepository;
-import inno.kanban.KanbanSimulator.dto.PlayerJoinDto;
-import inno.kanban.KanbanSimulator.dto.RoomCreateDto;
-import inno.kanban.KanbanSimulator.dto.RoomDto;
+import inno.kanban.KanbanSimulator.dto.*;
+import inno.kanban.KanbanSimulator.exception.PlayerNotFoundException;
 import inno.kanban.KanbanSimulator.exception.RoomNotFoundException;
 import inno.kanban.KanbanSimulator.model.Player;
 import inno.kanban.KanbanSimulator.model.Room;
@@ -17,8 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +63,7 @@ public class RoomServiceImpl implements RoomService {
 
         return RoomDto.builder()
                 .id(room.getId())
+                .started(room.getStarted())
                 .players(Mapper.mapToPlayers(room.getPlayers()))
                 .player(Mapper.mapToPlayer(player))
                 .build();
@@ -78,6 +79,7 @@ public class RoomServiceImpl implements RoomService {
         for (var i = 0; i < roomCreateDto.getTeamsAmount(); i++) {
             teams.add(Team.builder()
                     .room(room)
+                    .number((long) (i + 1))
                     .build());
         }
 
@@ -94,8 +96,59 @@ public class RoomServiceImpl implements RoomService {
 
         return RoomDto.builder()
                 .id(room.getId())
+                .started(room.getStarted())
                 .players(Set.of())
                 .player(Mapper.mapToPlayer(player))
+                .build();
+    }
+
+    @Override
+    public RoomDto checkRoomState(Long roomId,
+                                  Long playerId) throws RoomNotFoundException, PlayerNotFoundException {
+        var room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(roomId));
+
+        var player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new PlayerNotFoundException(playerId));
+
+        return RoomDto.builder()
+                .id(room.getId())
+                .started(room.getStarted())
+                .players(Mapper.mapToPlayers(room.getPlayers()))
+                .player(Mapper.mapToPlayer(player))
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public RoomDto startRoom(Long roomId, StartRoomDto startRoomDto) throws RoomNotFoundException {
+        var room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(roomId));
+
+        room.setStarted(true);
+        var playerSettingsMap = startRoomDto.getPlayers().stream().collect(Collectors.toMap(StartPlayerDto::getId, Function.identity()));
+
+        var teamsMap = room.getTeamSet().stream().collect(Collectors.toMap(Team::getNumber, Function.identity()));
+        for (var player : room.getPlayers()) {
+            var setting = playerSettingsMap.getOrDefault(player.getId(), null);
+            if (setting == null) {
+                throw new RuntimeException("No settings for player with id " + player.getId());
+            }
+            player.setSpectator(setting.getSpectator());
+            var team = teamsMap.getOrDefault(setting.getTeamNumber(), null);
+            if (team == null) {
+                throw new RuntimeException("Team not found exception");
+            }
+            player.setTeam(team);
+            playerRepository.save(player);
+        }
+        roomRepository.save(room);
+
+        return RoomDto.builder()
+                .id(room.getId())
+                .started(room.getStarted())
+                .players(Mapper.mapToPlayers(room.getPlayers()))
+                .player(Mapper.mapToPlayer(room.getPlayers().stream().filter(player -> player.getCreator()).findFirst().get()))
                 .build();
     }
 }

@@ -12,6 +12,8 @@ public class Mapper {
         return PlayerDto.builder()
                 .id(player.getId())
                 .name(player.getName())
+                .creator(player.getCreator())
+                .teamNumber(player.getTeam().getNumber())
                 .build();
     }
 

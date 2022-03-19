@@ -1,23 +1,17 @@
 package inno.kanban.KanbanSimulator.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class RoomDto {
+public class StartPlayerDto {
 
     private Long id;
 
-    private Boolean started;
+    private Boolean spectator;
 
-    private Set<PlayerDto> players;
-
-    private PlayerDto player;
+    private Long teamNumber;
 }
