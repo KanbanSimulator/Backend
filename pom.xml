@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -52,6 +52,11 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.2.18</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest</artifactId>
+			<version>2.1</version>
 		</dependency>
 	</dependencies>
 

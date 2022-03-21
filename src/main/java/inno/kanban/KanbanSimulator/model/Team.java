@@ -26,13 +26,11 @@ public class Team {
     @Column(nullable = false)
     private Long number;
 
-    @OneToOne
-    private Room game;
-
     @OneToMany
     private Set<Player> playerSet = new HashSet<>();
 
-    @ManyToOne
+    @JoinColumn(name = "room_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room room;
 
     @Column(nullable = false)

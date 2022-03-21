@@ -31,7 +31,7 @@ public class Room {
     @Builder.Default
     private Boolean started = false;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "room")
     @Builder.Default
     private Set<Team> teamSet = new HashSet<>();
 

@@ -97,7 +97,7 @@ public class RoomServiceImpl implements RoomService {
         return RoomDto.builder()
                 .id(room.getId())
                 .started(room.getStarted())
-                .players(Set.of())
+                .players(Set.of(Mapper.mapToPlayer(player)))
                 .player(Mapper.mapToPlayer(player))
                 .build();
     }

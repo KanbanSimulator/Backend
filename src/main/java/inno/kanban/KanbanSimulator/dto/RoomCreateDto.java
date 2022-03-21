@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoomCreateDto {
 
-    private Long teamsAmount;
+    private Integer teamsAmount;
 
     private PlayerJoinDto player;
 }
