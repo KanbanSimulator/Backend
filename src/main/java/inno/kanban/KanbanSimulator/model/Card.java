@@ -61,15 +61,31 @@ public class Card {
     @Builder.Default
     private Integer developCompleted = 0;
 
-    @Column(nullable = false)
-    @ColumnDefault(value = "0")
-    @Builder.Default
-    private Integer columnNumber = 0;
+    private Integer testingRemaining;
 
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     @Builder.Default
-    private Integer rowNumber = 0;
+    private Integer testingCompleted = 0;
 
-    private Integer business;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault(value = "'NEW'")
+    @Builder.Default
+    private ColumnType columnType = ColumnType.NEW;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    @Builder.Default
+    private Integer priority = 0;
+
+    private Integer businessValue;
+
+    public enum ColumnType {
+        NEW,
+        ANALYTICS,
+        DEVELOPMENT,
+        TESTING,
+        FINISHED,
+    }
 }
