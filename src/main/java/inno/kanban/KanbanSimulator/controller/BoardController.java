@@ -32,20 +32,15 @@ public class BoardController {
         return ResponseWrapper.from(boardService.populateBacklog(populateBacklogDto));
     }
 
-//    @PostMapping("/start-day")
-//    public ResponseWrapper<Object> startDay() {
-//        return null;
-//    }
-//
-//    @PostMapping("/move-card")
-//    public ResponseWrapper<Object> moveCard() {
-//        return null;
-//    }
-//
-//    @PostMapping("/move-player")
-//    public ResponseWrapper<Object> movePlayer() {
-//        return null;
-//    }
+    @PostMapping("/start-day")
+    public ResponseWrapper<BoardDto> startDay() {
+        return null;
+    }
+
+    @PostMapping("/move-player")
+    public ResponseWrapper<BoardDto> movePlayer() {
+        return null;
+    }
 //
 //    @PostMapping("/version-check")
 //    public ResponseWrapper<Object> versionCheck() {
