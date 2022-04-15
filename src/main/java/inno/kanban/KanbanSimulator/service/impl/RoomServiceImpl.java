@@ -103,6 +103,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RoomDto checkRoomState(Long roomId,
                                   Long playerId) throws RoomNotFoundException, PlayerNotFoundException {
         var room = roomRepository.findById(roomId)
