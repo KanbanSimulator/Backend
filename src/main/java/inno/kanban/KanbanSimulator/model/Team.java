@@ -48,7 +48,7 @@ public class Team {
     @Builder.Default
     private Integer businessValueSum = 0;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
     @Builder.Default
     private Set<Card> cardSet = new HashSet<>();
 

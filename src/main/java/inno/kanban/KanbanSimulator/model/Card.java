@@ -27,7 +27,7 @@ public class Card {
 
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
     @CreationTimestamp
