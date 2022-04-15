@@ -18,4 +18,6 @@ public class PlayerDto {
     private Boolean creator;
 
     private Long teamNumber;
+
+    private Long teamId;
 }

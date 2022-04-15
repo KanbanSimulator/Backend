@@ -14,6 +14,7 @@ public class Mapper {
                 .name(player.getName())
                 .creator(player.getCreator())
                 .teamNumber(player.getTeam().getNumber())
+                .teamId(player.getTeam().getId())
                 .build();
     }
 
