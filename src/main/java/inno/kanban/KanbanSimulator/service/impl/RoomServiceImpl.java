@@ -52,6 +52,7 @@ public class RoomServiceImpl implements RoomService {
         var player = Player.builder()
                 .name(playerJoinDto.getName())
                 .spectator(playerJoinDto.isSpectator())
+                .room(room)
                 .team(selectedTeam)
                 .build();
         playerRepository.save(player);
@@ -89,6 +90,7 @@ public class RoomServiceImpl implements RoomService {
                 .name(roomCreateDto.getPlayer().getName())
                 .spectator(roomCreateDto.getPlayer().isSpectator())
                 .team(teams.iterator().next())
+                .room(room)
                 .creator(true)
                 .build();
 
