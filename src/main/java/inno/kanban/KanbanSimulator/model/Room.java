@@ -35,7 +35,7 @@ public class Room {
     @Builder.Default
     private Set<Team> teamSet = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "room")
     @Builder.Default
     private Set<Player> players = new HashSet<>();
 

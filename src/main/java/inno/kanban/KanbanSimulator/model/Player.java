@@ -27,7 +27,7 @@ public class Player {
     @ManyToOne
     private Team team;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room room;
 
     @Column(nullable = false)
