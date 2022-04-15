@@ -29,7 +29,7 @@ public class BoardController {
 
     @PostMapping("/populate-backlog")
     public ResponseWrapper<BoardDto> populateBacklog(PopulateBacklogDto populateBacklogDto) {
-        return null;
+        return ResponseWrapper.from(boardService.populateBacklog(populateBacklogDto));
     }
 
 //    @PostMapping("/start-day")
