@@ -26,7 +26,7 @@ public class Team {
     @Column(nullable = false)
     private Long number;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
     private Set<Player> playerSet = new HashSet<>();
 
     @JoinColumn(name = "room_id")
