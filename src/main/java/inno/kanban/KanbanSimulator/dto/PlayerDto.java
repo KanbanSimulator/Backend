@@ -20,4 +20,6 @@ public class PlayerDto {
     private Long teamNumber;
 
     private Long teamId;
+
+    private Boolean spectator;
 }
