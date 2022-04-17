@@ -98,7 +98,6 @@ public class RoomServiceImpl implements RoomService {
                 .build();
 
         playerRepository.save(player);
-
         return RoomDto.builder()
                 .id(room.getId())
                 .started(room.getStarted())
