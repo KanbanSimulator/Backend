@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
     @Override
-    @EntityGraph(attributePaths = {"players", "players.team"})
+    @EntityGraph(attributePaths = {"players", "players.team", "team"})
     Optional<Room> findById(Long aLong);
 }

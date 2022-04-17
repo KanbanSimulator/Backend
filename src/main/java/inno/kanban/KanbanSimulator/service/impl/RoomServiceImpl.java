@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static inno.kanban.KanbanSimulator.utils.Mapper.mapToTeams;
+
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
@@ -65,6 +67,7 @@ public class RoomServiceImpl implements RoomService {
         return RoomDto.builder()
                 .id(room.getId())
                 .started(room.getStarted())
+                .teams(mapToTeams(room.getTeamSet()))
                 .players(Mapper.mapToPlayers(room.getPlayers()))
                 .player(Mapper.mapToPlayer(player))
                 .build();
@@ -99,6 +102,7 @@ public class RoomServiceImpl implements RoomService {
         return RoomDto.builder()
                 .id(room.getId())
                 .started(room.getStarted())
+                .teams(mapToTeams(room.getTeamSet()))
                 .players(Set.of(Mapper.mapToPlayer(player)))
                 .player(Mapper.mapToPlayer(player))
                 .build();
@@ -116,6 +120,7 @@ public class RoomServiceImpl implements RoomService {
         return RoomDto.builder()
                 .id(room.getId())
                 .started(room.getStarted())
+                .teams(mapToTeams(room.getTeamSet()))
                 .players(Mapper.mapToPlayers(room.getPlayers()))
                 .player(Mapper.mapToPlayer(player))
                 .build();
@@ -149,6 +154,7 @@ public class RoomServiceImpl implements RoomService {
         return RoomDto.builder()
                 .id(room.getId())
                 .started(room.getStarted())
+                .teams(mapToTeams(room.getTeamSet()))
                 .players(Mapper.mapToPlayers(room.getPlayers()))
                 .player(Mapper.mapToPlayer(room.getPlayers().stream().filter(player -> player.getCreator()).findFirst().get()))
                 .build();

@@ -19,5 +19,7 @@ public class RoomDto {
 
     private Set<PlayerDto> players;
 
+    private Set<TeamDto> teams;
+
     private PlayerDto player;
 }
