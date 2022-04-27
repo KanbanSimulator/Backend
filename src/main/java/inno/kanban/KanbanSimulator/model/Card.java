@@ -68,9 +68,15 @@ public class Card {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @ColumnDefault(value = "'NEW'")
+    @ColumnDefault(value = "'QUEUE'")
     @Builder.Default
-    private ColumnType columnType = ColumnType.NEW;
+    private ColumnType columnType = ColumnType.QUEUE;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault(value = "'IN_PROGRESS'")
+    @Builder.Default
+    private ColumnStatus columnStatus = ColumnStatus.IN_PROGRESS;
 
     @Column(nullable = false)
     @ColumnDefault(value = "0")
@@ -79,11 +85,34 @@ public class Card {
 
     private Integer businessValue;
 
+    @AllArgsConstructor
+    @NoArgsConstructor
     public enum ColumnType {
-        NEW,
-        ANALYTICS,
-        DEVELOPMENT,
-        TESTING,
-        FINISHED,
+        QUEUE(0),
+        ANALYTICS(1),
+        DEVELOPMENT(3),
+        TESTING(5),
+        COMPLETED(4);
+
+        @Getter
+        private int value;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public enum ColumnStatus {
+        IN_PROGRESS(0),
+        FINISHED(1);
+
+        @Getter
+        private int value;
+    }
+
+    public int getFrontValue() {
+        switch (this.columnType) {
+            case QUEUE: return 0;
+            case COMPLETED: return 7;
+            default: return this.columnType.getValue() + this.columnStatus.getValue();
+        }
     }
 }

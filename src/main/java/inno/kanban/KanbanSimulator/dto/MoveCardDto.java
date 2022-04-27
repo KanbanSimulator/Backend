@@ -12,7 +12,7 @@ public class MoveCardDto {
 
     private Long cardId;
 
-    private Card.ColumnType columnType;
+    private Integer columnNumber;
 
-    private Integer priority;
+    private Integer ordering;
 }

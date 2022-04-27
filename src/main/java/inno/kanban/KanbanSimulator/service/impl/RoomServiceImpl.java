@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -79,7 +81,7 @@ public class RoomServiceImpl implements RoomService {
         var room = new Room();
         roomRepository.save(room);
 
-        Set<Team> teams = new HashSet<>();
+        List<Team> teams = new ArrayList<>();
         for (var i = 0; i < roomCreateDto.getTeamsAmount(); i++) {
             teams.add(Team.builder()
                     .room(room)
@@ -101,7 +103,7 @@ public class RoomServiceImpl implements RoomService {
         return RoomDto.builder()
                 .id(room.getId())
                 .started(room.getStarted())
-                .teams(mapToTeams(room.getTeamSet()))
+                .teams(mapToTeams(new HashSet<>(teams)))
                 .players(Set.of(Mapper.mapToPlayer(player)))
                 .player(Mapper.mapToPlayer(player))
                 .build();

@@ -33,7 +33,7 @@ public class RoomController {
     @PostMapping("/{roomId}/start")
     public ResponseWrapper<RoomDto> startTheGame(@PathVariable("roomId") Long roomId,
                                                  @RequestBody StartRoomDto startRoomDto) {
-        return ResponseWrapper.from(null);
+        return ResponseWrapper.from(roomService.startRoom(roomId, startRoomDto));
     }
 
     @GetMapping("/{roomId}")

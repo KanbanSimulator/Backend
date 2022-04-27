@@ -3,8 +3,6 @@ package inno.kanban.KanbanSimulator.controller;
 import inno.kanban.KanbanSimulator.dto.BoardDto;
 import inno.kanban.KanbanSimulator.dto.MoveCardDto;
 import inno.kanban.KanbanSimulator.dto.PopulateBacklogDto;
-import inno.kanban.KanbanSimulator.dto.WipLimitDto;
-import inno.kanban.KanbanSimulator.exception.PlayerNotFoundException;
 import inno.kanban.KanbanSimulator.service.BoardService;
 import inno.kanban.KanbanSimulator.utils.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +21,14 @@ public class BoardController {
     }
 
     @PostMapping("/{teamId}")
-    public ResponseWrapper<BoardDto> getBoard(@PathVariable("teamId") Long teamId){
-        return ResponseWrapper.from(boardService.getBoard(teamId));
+    public ResponseWrapper<BoardDto> getOrCreateBoard(@PathVariable("teamId") Long teamId){
+        return ResponseWrapper.from(boardService.getOrCreateBoard(new PopulateBacklogDto(teamId)));
     }
 
-    @PostMapping("/populate-backlog")
-    public ResponseWrapper<BoardDto> populateBacklog(PopulateBacklogDto populateBacklogDto) {
-        return ResponseWrapper.from(boardService.populateBacklog(populateBacklogDto));
-    }
+//    @PostMapping("/populate-backlog")
+//    public ResponseWrapper<BoardDto> populateBacklog(PopulateBacklogDto populateBacklogDto) {
+//        return ResponseWrapper.from(boardService.getOrCreateBoard(populateBacklogDto));
+//    }
 
     @PostMapping("/start-day")
     public ResponseWrapper<BoardDto> startDay() {

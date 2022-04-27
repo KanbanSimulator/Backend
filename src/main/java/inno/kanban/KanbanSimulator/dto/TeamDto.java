@@ -9,17 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PlayerDto {
-
-    private Long id;
-
-    private String name;
-
-    private Boolean creator;
-
-    private Long teamNumber;
+public class TeamDto {
 
     private Long teamId;
 
-    private Boolean spectator;
+    private Long teamNumber;
 }

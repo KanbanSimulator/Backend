@@ -5,7 +5,6 @@ import inno.kanban.KanbanSimulator.dao.PlayerRepository;
 import inno.kanban.KanbanSimulator.dao.TeamRepository;
 import inno.kanban.KanbanSimulator.dto.*;
 import inno.kanban.KanbanSimulator.exception.CardNotFoundException;
-import inno.kanban.KanbanSimulator.exception.PlayerNotFoundException;
 import inno.kanban.KanbanSimulator.exception.TeamNotFoundException;
 import inno.kanban.KanbanSimulator.model.Card;
 import inno.kanban.KanbanSimulator.model.Team;
@@ -14,11 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -51,13 +48,9 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new TeamNotFoundException(teamId));
 
         var cards = team.getCardSet();
-        var cardMap = cards.stream().collect(Collectors.groupingBy(Card::getColumnType));
         return BoardDto.builder()
                 .teamId(team.getId())
-                .queue(mapCardsToDto(cardMap.getOrDefault(Card.ColumnType.NEW, Collections.emptyList())))
-                .analyticsCards(mapCardsToDto(cardMap.getOrDefault(Card.ColumnType.ANALYTICS, Collections.emptyList())))
-                .testingCards(mapCardsToDto(cardMap.getOrDefault(Card.ColumnType.TESTING, Collections.emptyList())))
-                .finishedCards(mapCardsToDto(cardMap.getOrDefault(Card.ColumnType.FINISHED, Collections.emptyList())))
+                .cards(mapCardsToDto(new ArrayList<>(cards)))
                 .build();
     }
 
@@ -71,8 +64,9 @@ public class BoardServiceImpl implements BoardService {
         var cards = team.getCardSet();
         var cardMap = cards.stream().collect(Collectors.groupingBy(Card::getColumnType));
 
-        int priority = moveCardDto.getPriority();
-        var selectedCards = cardMap.getOrDefault(moveCardDto.getColumnType(), Collections.emptyList());
+        int priority = moveCardDto.getOrdering();
+        var type = getColumnType(moveCardDto.getColumnNumber());
+        var selectedCards = cardMap.getOrDefault(type, Collections.emptyList());
         for (var card : selectedCards) {
             if (card.getPriority() == priority) {
                 priority += 1;
@@ -80,27 +74,31 @@ public class BoardServiceImpl implements BoardService {
             }
         }
         cardDao.saveAll(selectedCards);
-        movedCard.setColumnType(moveCardDto.getColumnType());
-        movedCard.setPriority(moveCardDto.getPriority());
+        movedCard.setColumnType(type);
+        movedCard.setPriority(moveCardDto.getOrdering());
 
         return BoardDto.builder()
                 .teamId(team.getId())
-                .queue(mapCardsToDto(cardMap.getOrDefault(Card.ColumnType.NEW, Collections.emptyList())))
-                .analyticsCards(mapCardsToDto(cardMap.getOrDefault(Card.ColumnType.ANALYTICS, Collections.emptyList())))
-                .testingCards(mapCardsToDto(cardMap.getOrDefault(Card.ColumnType.TESTING, Collections.emptyList())))
-                .finishedCards(mapCardsToDto(cardMap.getOrDefault(Card.ColumnType.FINISHED, Collections.emptyList())))
+                .cards(mapCardsToDto(new ArrayList<>(cards)))
                 .build();
     }
 
     @Override
     @Transactional
-    public BoardDto populateBacklog(PopulateBacklogDto populateBacklogDto) {
+    public BoardDto getOrCreateBoard(PopulateBacklogDto populateBacklogDto) {
 
         var team = teamRepository.findById(populateBacklogDto.getTeamId())
                 .orElseThrow(() -> new TeamNotFoundException(populateBacklogDto.getTeamId()));
 
+        if (team.getCardSet().size() > 0) {
+            return BoardDto.builder()
+                    .teamId(team.getId())
+                    .cards(mapCardsToDto(new ArrayList<>(team.getCardSet())))
+                    .build();
+        }
+
         int storyNum = 0;
-        var newCards = generateNewCards(team, RANDOM.nextInt(8), Card.ColumnType.NEW, storyNum);
+        var newCards = generateNewCards(team, RANDOM.nextInt(8), Card.ColumnType.QUEUE, storyNum);
         cardDao.saveAll(newCards);
         storyNum += newCards.size();
         var analCards = generateNewCards(team, RANDOM.nextInt(3), Card.ColumnType.ANALYTICS, storyNum);
@@ -121,9 +119,7 @@ public class BoardServiceImpl implements BoardService {
 
         return BoardDto.builder()
                 .teamId(team.getId())
-                .queue(mapCardsToDto(newCards))
-                .analyticsCards(mapCardsToDto(analCards))
-                .testingCards(mapCardsToDto(testCards))
+                .cards(mapCardsToDto(Stream.of(newCards, analCards, devCards, testCards).flatMap(Collection::stream).collect(Collectors.toList())))
                 .build();
     }
 
@@ -162,6 +158,7 @@ public class BoardServiceImpl implements BoardService {
                 .businessValue(card.getBusinessValue())
                 .isExpedite(card.getIsExpedite())
                 .title(card.getTitle())
+                .ordering(card.getPriority())
                 .analyticCompleted(card.getAnalyticCompleted())
                 .analyticRemaining(card.getAnalyticRemaining())
                 .developCompleted(card.getDevelopCompleted())
@@ -169,7 +166,16 @@ public class BoardServiceImpl implements BoardService {
                 .testingCompleted(card.getTestingCompleted())
                 .testingRemaining(card.getTestingRemaining())
                 .readyDay(card.getReadyDay())
+                .frontColumnType(card.getFrontValue())
                 .build())
                 .collect(Collectors.toList());
+    }
+
+    private Card.ColumnType getColumnType(Integer columnNumber) {
+        if (columnNumber == 0) return Card.ColumnType.QUEUE;
+        if (columnNumber < 3) return Card.ColumnType.ANALYTICS;
+        if (columnNumber < 5) return Card.ColumnType.DEVELOPMENT;
+        if (columnNumber < 7) return Card.ColumnType.TESTING;
+        return Card.ColumnType.COMPLETED;
     }
 }

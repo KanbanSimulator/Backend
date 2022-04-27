@@ -15,13 +15,5 @@ public class BoardDto {
 
     private Long teamId;
 
-    private List<CardDto> queue;
-
-    private List<CardDto> analyticsCards;
-
-    private List<CardDto> developerCards;
-
-    private List<CardDto> testingCards;
-
-    private List<CardDto> finishedCards;
+    private List<CardDto> cards;
 }

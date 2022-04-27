@@ -20,6 +20,8 @@ public class CardDto {
 
     private Boolean isExpedite;
 
+    private Integer ordering;
+
     private Integer readyDay;
 
     private Integer analyticRemaining;
@@ -37,4 +39,6 @@ public class CardDto {
     private Card.ColumnType columnType;
 
     private Integer businessValue;
+
+    private Integer frontColumnType;
 }
