@@ -41,4 +41,6 @@ public class CardDto {
     private Integer businessValue;
 
     private Integer frontColumnType;
+
+    private Integer personsAmount;
 }

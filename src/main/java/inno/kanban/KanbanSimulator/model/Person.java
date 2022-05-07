@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @Builder
-public class Character {
+public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -30,6 +30,7 @@ public class Room {
     private Boolean started = false;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "room")
+    @OrderBy("number")
     @Builder.Default
     private Set<Team> teamSet = new HashSet<>();
 

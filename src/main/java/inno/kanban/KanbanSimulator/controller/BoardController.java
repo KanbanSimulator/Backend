@@ -1,8 +1,6 @@
 package inno.kanban.KanbanSimulator.controller;
 
-import inno.kanban.KanbanSimulator.dto.BoardDto;
-import inno.kanban.KanbanSimulator.dto.MoveCardDto;
-import inno.kanban.KanbanSimulator.dto.PopulateBacklogDto;
+import inno.kanban.KanbanSimulator.dto.*;
 import inno.kanban.KanbanSimulator.service.BoardService;
 import inno.kanban.KanbanSimulator.utils.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
@@ -25,19 +23,15 @@ public class BoardController {
         return ResponseWrapper.from(boardService.getOrCreateBoard(new PopulateBacklogDto(teamId)));
     }
 
-//    @PostMapping("/populate-backlog")
-//    public ResponseWrapper<BoardDto> populateBacklog(PopulateBacklogDto populateBacklogDto) {
-//        return ResponseWrapper.from(boardService.getOrCreateBoard(populateBacklogDto));
-//    }
-
-    @PostMapping("/start-day")
-    public ResponseWrapper<BoardDto> startDay() {
-        return null;
+    @PostMapping("/{teamId}/start-day")
+    public ResponseWrapper<BoardDto> startDay(@PathVariable("teamId") Long teamId) {
+        return ResponseWrapper.from(boardService.startDay(teamId));
     }
 
-    @PostMapping("/move-player")
-    public ResponseWrapper<BoardDto> movePlayer() {
-        return null;
+    @PostMapping("/{teamId}/move-person")
+    public ResponseWrapper<BoardDto> movePerson(@PathVariable("teamId") Long teamId,
+                                                @RequestBody MovePersonDto movePersonDto) {
+        return ResponseWrapper.from(boardService.movePerson(teamId, movePersonDto));
     }
 //
 //    @PostMapping("/version-check")

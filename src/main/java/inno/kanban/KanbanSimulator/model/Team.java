@@ -65,6 +65,21 @@ public class Team {
     @Builder.Default
     private Integer wip3 = 4;
 
+    @Column(nullable = false)
+    @ColumnDefault(value = "5")
+    @Builder.Default
+    private Integer freeAnalyticsPersons = 5;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "5")
+    @Builder.Default
+    private Integer freeDevelopmentPersons = 5;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "5")
+    @Builder.Default
+    private Integer freeTestingPersons = 5;
+
     public void incVersion() {
         this.version += 1;
     }

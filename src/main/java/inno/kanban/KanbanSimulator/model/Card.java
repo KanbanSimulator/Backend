@@ -64,6 +64,11 @@ public class Card {
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     @Builder.Default
+    private Integer personsCount = 0;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    @Builder.Default
     private Integer testingCompleted = 0;
 
     @Column(nullable = false)

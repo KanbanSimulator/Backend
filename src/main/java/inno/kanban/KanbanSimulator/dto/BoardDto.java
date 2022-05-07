@@ -13,7 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 public class BoardDto {
 
+    private Integer analyticsFreePersons;
+
+    private Integer developmentFreePersons;
+
+    private Integer testFreePersons;
+
     private Long teamId;
+
+    private Integer day;
 
     private List<CardDto> cards;
 }
