@@ -64,6 +64,16 @@ public class Card {
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     @Builder.Default
+    private Integer blockerCompleted = 0;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    @Builder.Default
+    private Integer blockerRemaining = 0;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    @Builder.Default
     private Integer personsCount = 0;
 
     @Column(nullable = false)

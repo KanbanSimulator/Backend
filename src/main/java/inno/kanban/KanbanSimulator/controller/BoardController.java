@@ -33,6 +33,17 @@ public class BoardController {
                                                 @RequestBody MovePersonDto movePersonDto) {
         return ResponseWrapper.from(boardService.movePerson(teamId, movePersonDto));
     }
+
+    @PostMapping("/{teamId}/wip")
+    public ResponseWrapper<WipLimitDto> setWipLimit(@PathVariable("teamId") Long teamId,
+                                                    @RequestBody WipLimitDto wipLimitDto) {
+        return ResponseWrapper.from(boardService.setWipLimit(teamId, wipLimitDto));
+    }
+
+    @GetMapping("/{teamId}/wip")
+    public ResponseWrapper<WipLimitDto> getWipLimit(@PathVariable("teamId") Long teamId) {
+        return ResponseWrapper.from(boardService.getWipLimit(teamId));
+    }
 //
 //    @PostMapping("/version-check")
 //    public ResponseWrapper<Object> versionCheck() {

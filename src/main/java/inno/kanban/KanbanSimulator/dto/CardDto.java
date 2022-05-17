@@ -36,6 +36,10 @@ public class CardDto {
 
     private Integer testingCompleted;
 
+    private Integer blockerRemaining;
+
+    private Integer blockerCompleted;
+
     private Card.ColumnType columnType;
 
     private Integer businessValue;

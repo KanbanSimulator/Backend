@@ -1,9 +1,6 @@
 package inno.kanban.KanbanSimulator.service;
 
-import inno.kanban.KanbanSimulator.dto.BoardDto;
-import inno.kanban.KanbanSimulator.dto.MoveCardDto;
-import inno.kanban.KanbanSimulator.dto.MovePersonDto;
-import inno.kanban.KanbanSimulator.dto.PopulateBacklogDto;
+import inno.kanban.KanbanSimulator.dto.*;
 
 public interface BoardService {
 
@@ -14,7 +11,13 @@ public interface BoardService {
 
     BoardDto getBoard(Long teamId);
 
+    WipLimitDto setWipLimit(Long teamId, WipLimitDto wipLimitDto);
+
+    WipLimitDto getWipLimit(Long teamId);
+
     BoardDto getOrCreateBoard(PopulateBacklogDto populateBacklogDto);
 
     BoardDto startDay(Long teamId);
+
+    StatisticsDto getStatistics(Long roomId);
 }

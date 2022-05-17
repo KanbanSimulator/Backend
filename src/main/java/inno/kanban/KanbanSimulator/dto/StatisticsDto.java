@@ -5,18 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WipLimitDto {
+public class StatisticsDto {
 
     @Builder.Default
-    private Integer wip1 = 5;
-
-    @Builder.Default
-    private Integer wip2 = 5;
-
-    @Builder.Default
-    private Integer wip3 = 5;
+    List<StatisticDto> data = new ArrayList<>();
 }

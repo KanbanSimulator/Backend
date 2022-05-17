@@ -5,18 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WipLimitDto {
+public class StatisticDto {
 
-    @Builder.Default
-    private Integer wip1 = 5;
+    private Long teamNumber;
 
-    @Builder.Default
-    private Integer wip2 = 5;
+    private List<String> members;
 
-    @Builder.Default
-    private Integer wip3 = 5;
+    private Integer value;
+
+    private Boolean finished;
 }

@@ -2,12 +2,15 @@ package inno.kanban.KanbanSimulator.service.impl;
 
 import inno.kanban.KanbanSimulator.dao.CardDao;
 import inno.kanban.KanbanSimulator.dao.PlayerRepository;
+import inno.kanban.KanbanSimulator.dao.RoomRepository;
 import inno.kanban.KanbanSimulator.dao.TeamRepository;
 import inno.kanban.KanbanSimulator.dto.*;
 import inno.kanban.KanbanSimulator.exception.CardNotFoundException;
 import inno.kanban.KanbanSimulator.exception.KanbanException;
+import inno.kanban.KanbanSimulator.exception.RoomNotFoundException;
 import inno.kanban.KanbanSimulator.exception.TeamNotFoundException;
 import inno.kanban.KanbanSimulator.model.Card;
+import inno.kanban.KanbanSimulator.model.Player;
 import inno.kanban.KanbanSimulator.model.Team;
 import inno.kanban.KanbanSimulator.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +28,11 @@ public class BoardServiceImpl implements BoardService {
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
     private final CardDao cardDao;
+    private final RoomRepository roomRepository;
 
     private final Random RANDOM = new Random();
+
+    private static int PERSONS_AMOUNT = 5;
 
 
 //    @Override
@@ -56,6 +62,34 @@ public class BoardServiceImpl implements BoardService {
                 .developmentFreePersons(team.getFreeDevelopmentPersons())
                 .testFreePersons(team.getFreeTestingPersons())
                 .cards(mapCardsToDto(new ArrayList<>(cards)))
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public WipLimitDto setWipLimit(Long teamId, WipLimitDto wipLimitDto) {
+        var team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException(teamId));
+
+        team.setWip1(wipLimitDto.getWip1());
+        team.setWip2(wipLimitDto.getWip2());
+        team.setWip3(wipLimitDto.getWip3());
+        return WipLimitDto.builder()
+                .wip1(team.getWip1())
+                .wip2(team.getWip2())
+                .wip3(team.getWip3())
+                .build();
+    }
+
+    @Override
+    public WipLimitDto getWipLimit(Long teamId) {
+        var team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException(teamId));
+
+        return WipLimitDto.builder()
+                .wip1(team.getWip1())
+                .wip2(team.getWip2())
+                .wip3(team.getWip3())
                 .build();
     }
 
@@ -101,21 +135,74 @@ public class BoardServiceImpl implements BoardService {
         var team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new TeamNotFoundException(teamId));
 
-        var targetCard = cardDao.findById(movePersonDto.getCurrentCard())
-                .orElseThrow(() -> new CardNotFoundException(movePersonDto.getCurrentCard()));
-        if (movePersonDto.getPrevCard() == null) {
-            switch (targetCard.getColumnType()) {
-                case TESTING: team.setFreeTestingPersons(team.getFreeAnalyticsPersons() - 1);
-                case ANALYTICS: team.setFreeAnalyticsPersons(team.getFreeAnalyticsPersons() - 1);
-                case DEVELOPMENT: team.setFreeDevelopmentPersons(team.getFreeDevelopmentPersons() - 1);
+        Card currentCard = null;
+        Card prevCard = null;
+        if (movePersonDto.getCurrentCard() != null) {
+            currentCard = cardDao.findById(movePersonDto.getCurrentCard())
+                    .orElseThrow(() -> new CardNotFoundException(movePersonDto.getCurrentCard()));
+        }
+
+        if (movePersonDto.getPrevCard() != null) {
+            prevCard = cardDao.findById(movePersonDto.getPrevCard())
+                    .orElseThrow(() -> new CardNotFoundException(movePersonDto.getPrevCard()));
+        }
+
+        if (prevCard == null && currentCard != null) {
+            switch (currentCard.getColumnType()) {
+                case TESTING: {
+                    if (team.getFreeTestingPersons() > 0) {
+                        team.setFreeTestingPersons(team.getFreeTestingPersons() - 1);
+                        currentCard.setPersonsCount(currentCard.getPersonsCount() + 1);
+                    }
+                    break;
+                }
+                case ANALYTICS: {
+                    if (team.getFreeAnalyticsPersons() > 0) {
+                        team.setFreeAnalyticsPersons(team.getFreeAnalyticsPersons() - 1);
+                        currentCard.setPersonsCount(currentCard.getPersonsCount() + 1);
+                    }
+                    break;
+                }
+                case DEVELOPMENT: {
+                    if (team.getFreeDevelopmentPersons() > 0) {
+                        team.setFreeDevelopmentPersons(team.getFreeDevelopmentPersons() - 1);
+                        currentCard.setPersonsCount(currentCard.getPersonsCount() + 1);
+                    }
+                    break;
+                }
+                default: throw new KanbanException("Wrong input");
+            }
+        } else if (currentCard == null && prevCard != null) {
+            switch (prevCard.getColumnType()) {
+                case TESTING: {
+                    if (team.getFreeTestingPersons() < PERSONS_AMOUNT && prevCard.getPersonsCount() > 0) {
+                        team.setFreeTestingPersons(team.getFreeAnalyticsPersons() + 1);
+                        prevCard.setPersonsCount(prevCard.getPersonsCount() - 1);
+                    }
+                    break;
+                }
+                case ANALYTICS: {
+                    if (team.getFreeAnalyticsPersons() < PERSONS_AMOUNT && prevCard.getPersonsCount() > 0) {
+                        team.setFreeAnalyticsPersons(team.getFreeAnalyticsPersons() + 1);
+                        prevCard.setPersonsCount(prevCard.getPersonsCount() - 1);
+                    }
+                    break;
+                }
+                case DEVELOPMENT: {
+                    if (team.getFreeDevelopmentPersons() < PERSONS_AMOUNT && prevCard.getPersonsCount() > 0) {
+                        team.setFreeDevelopmentPersons(team.getFreeDevelopmentPersons() + 1);
+                        prevCard.setPersonsCount(prevCard.getPersonsCount() - 1);
+                    }
+                    break;
+                }
                 default: throw new KanbanException("Wrong input");
             }
         } else {
-            var prevCard = cardDao.findById(movePersonDto.getPrevCard())
-                    .orElseThrow(() -> new CardNotFoundException(movePersonDto.getPrevCard()));
-            prevCard.setPersonsCount(prevCard.getPersonsCount() - 1);
+            if (prevCard.getPersonsCount() > 0) {
+                prevCard.setPersonsCount(prevCard.getPersonsCount() - 1);
+                currentCard.setPersonsCount(currentCard.getPersonsCount() + 1);
+            }
         }
-        targetCard.setPersonsCount(targetCard.getPersonsCount() + 1);
 
         return BoardDto.builder()
                 .teamId(team.getId())
@@ -137,6 +224,10 @@ public class BoardServiceImpl implements BoardService {
         if (team.getCardSet().size() > 0) {
             return BoardDto.builder()
                     .teamId(team.getId())
+                    .day(team.getDayNum())
+                    .analyticsFreePersons(team.getFreeAnalyticsPersons())
+                    .developmentFreePersons(team.getFreeDevelopmentPersons())
+                    .testFreePersons(team.getFreeTestingPersons())
                     .cards(mapCardsToDto(new ArrayList<>(team.getCardSet())))
                     .build();
         }
@@ -150,14 +241,17 @@ public class BoardServiceImpl implements BoardService {
         storyNum += analCards.size();
         var devCards = generateNewCards(team, RANDOM.nextInt(3) + 1, Card.ColumnType.DEVELOPMENT, storyNum);
         devCards.forEach(card -> {
-            card.setAnalyticCompleted(card.getAnalyticCompleted());
+            card.setAnalyticCompleted(card.getAnalyticRemaining());
+            card.setAnalyticRemaining(0);
         });
         cardDao.saveAll(devCards);
         storyNum += devCards.size();
         var testCards = generateNewCards(team, RANDOM.nextInt(3) + 1, Card.ColumnType.TESTING, storyNum);
         testCards.forEach(card -> {
-            card.setAnalyticCompleted(card.getAnalyticCompleted());
+            card.setAnalyticCompleted(card.getAnalyticRemaining());
             card.setDevelopCompleted(card.getDevelopRemaining());
+            card.setAnalyticRemaining(0);
+            card.setDevelopRemaining(0);
         });
         cardDao.saveAll(testCards);
 
@@ -172,6 +266,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional
     public BoardDto startDay(Long teamId) {
         var team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new TeamNotFoundException(teamId));
@@ -181,11 +276,17 @@ public class BoardServiceImpl implements BoardService {
         team.setFreeTestingPersons(5);
         team.setDayNum(team.getDayNum() + 1);
 
-        team.getCardSet().forEach(card -> card.setPersonsCount(0));
+        var cards = team.getCardSet();
+        cards.forEach(this::progressCard);
+        cards.forEach(card -> card.setPersonsCount(0));
+        cardDao.saveAll(cards);
 
-        int storyNum = 0;
-        var newCards = generateNewCards(team, RANDOM.nextInt(8) + 1, Card.ColumnType.QUEUE, storyNum);
-        cardDao.saveAll(newCards);
+        int storyNum = cards.size();
+        List<Card> newCards = Collections.emptyList();
+        if (team.getDayNum() % 10 == 0) {
+            newCards = generateNewCards(team, RANDOM.nextInt(8) + 1, Card.ColumnType.QUEUE, storyNum);
+            cardDao.saveAll(newCards);
+        }
 
         return BoardDto.builder()
                 .teamId(team.getId())
@@ -193,7 +294,33 @@ public class BoardServiceImpl implements BoardService {
                 .analyticsFreePersons(team.getFreeAnalyticsPersons())
                 .developmentFreePersons(team.getFreeDevelopmentPersons())
                 .testFreePersons(team.getFreeTestingPersons())
-                .cards(mapCardsToDto(Stream.of(newCards, team.getCardSet()).flatMap(Collection::stream).collect(Collectors.toList())))
+                .cards(mapCardsToDto(Stream.of(newCards, cards).flatMap(Collection::stream).collect(Collectors.toList())))
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public StatisticsDto getStatistics(Long roomId) {
+
+        var room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(roomId));
+
+        var teams = room.getTeamSet();
+
+        return StatisticsDto.builder()
+                .data(teams.stream()
+                        .map(team -> StatisticDto.builder()
+                                .teamNumber(team.getNumber())
+                                .members(team.getPlayerSet().stream()
+                                        .map(Player::getName)
+                                        .collect(Collectors.toList()))
+                                .value(team.getCardSet().stream()
+                                        .filter(card -> card.getColumnType() == Card.ColumnType.TESTING && card.getColumnStatus() == Card.ColumnStatus.FINISHED)
+                                        .mapToInt(Card::getBusinessValue)
+                                        .sum())
+                                .finished(team.getDayNum() >= 25)
+                                .build())
+                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -215,6 +342,7 @@ public class BoardServiceImpl implements BoardService {
                     .developRemaining(RANDOM.nextInt(20) + 1)
                     .testingCompleted(0)
                     .testingRemaining(RANDOM.nextInt(20) + 1)
+                    .blockerRemaining(RANDOM.nextInt(100) > 90 ? RANDOM.nextInt(20) + 1 : 0)
                     .isExpedite(RANDOM.nextInt(100) > 90)
                     .team(team)
                     .priority(priority)
@@ -239,11 +367,63 @@ public class BoardServiceImpl implements BoardService {
                 .developRemaining(card.getDevelopRemaining())
                 .testingCompleted(card.getTestingCompleted())
                 .testingRemaining(card.getTestingRemaining())
+                .blockerCompleted(card.getBlockerCompleted())
+                .blockerRemaining(card.getBlockerRemaining())
                 .readyDay(card.getReadyDay())
                 .personsAmount(card.getPersonsCount())
                 .frontColumnType(card.getFrontValue())
                 .build())
                 .collect(Collectors.toList());
+    }
+
+    private static Integer WORK_CONST = 5;
+    private static Integer BLOCKER_CONST = 8;
+
+    private void progressCard(Card card) {
+        if (card.getColumnStatus() == Card.ColumnStatus.IN_PROGRESS) {
+            if (card.getPersonsCount() > 0) {
+                if (card.getBlockerRemaining() > 0) {
+                    var blockerTotal = card.getBlockerCompleted() + card.getBlockerRemaining();
+                    card.setBlockerCompleted(card.getBlockerCompleted() + BLOCKER_CONST);
+                    if (card.getBlockerCompleted() >= blockerTotal) {
+                        card.setBlockerCompleted(blockerTotal);
+                    }
+                    card.setBlockerRemaining(blockerTotal - card.getBlockerCompleted());
+                }
+                switch (card.getColumnType()) {
+                    case ANALYTICS: {
+                        var total = card.getAnalyticCompleted() + card.getAnalyticRemaining();
+                        card.setAnalyticCompleted((card.getAnalyticCompleted() + card.getPersonsCount() * WORK_CONST));
+                        if (card.getAnalyticCompleted() >= total) {
+                            card.setAnalyticCompleted(total);
+                            card.setColumnStatus(Card.ColumnStatus.FINISHED);
+                        }
+                        card.setAnalyticRemaining(total - card.getAnalyticCompleted());
+                        break;
+                    }
+                    case DEVELOPMENT: {
+                        var total = card.getDevelopCompleted() + card.getDevelopRemaining();
+                        card.setDevelopCompleted((card.getDevelopCompleted() + card.getPersonsCount() * WORK_CONST));
+                        if (card.getDevelopCompleted() >= total) {
+                            card.setDevelopCompleted(total);
+                            card.setColumnStatus(Card.ColumnStatus.FINISHED);
+                        }
+                        card.setDevelopRemaining(total - card.getDevelopCompleted());
+                        break;
+                    }
+                    case TESTING: {
+                        var total = card.getTestingCompleted() + card.getTestingRemaining();
+                        card.setTestingCompleted((card.getTestingCompleted() + card.getPersonsCount() * WORK_CONST));
+                        if (card.getTestingCompleted() >= total) {
+                            card.setTestingCompleted(total);
+                            card.setColumnStatus(Card.ColumnStatus.FINISHED);
+                        }
+                        card.setTestingRemaining(total - card.getTestingCompleted());
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private Card.ColumnType getColumnType(Integer columnNumber) {

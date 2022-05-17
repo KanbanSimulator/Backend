@@ -5,6 +5,8 @@ import inno.kanban.KanbanSimulator.dto.TeamDto;
 import inno.kanban.KanbanSimulator.model.Player;
 import inno.kanban.KanbanSimulator.model.Team;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,12 +29,13 @@ public class Mapper {
                 .collect(Collectors.toSet());
     }
 
-    public static Set<TeamDto> mapToTeams(Set<Team> teams) {
+    public static List<TeamDto> mapToTeams(Set<Team> teams) {
         return teams.stream()
                 .map(team -> TeamDto.builder()
                         .teamId(team.getId())
                         .teamNumber(team.getNumber())
                         .build())
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(team -> team.getTeamNumber()))
+                .collect(Collectors.toList());
     }
 }

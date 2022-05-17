@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,7 +20,7 @@ public class RoomDto {
 
     private Set<PlayerDto> players;
 
-    private Set<TeamDto> teams;
+    private List<TeamDto> teams;
 
     private PlayerDto player;
 }
